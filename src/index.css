@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  body {
+    background-color: #FAF6EF;
+    color: #1D2420;
+    font-family: 'Nunito', 'Atkinson Hyperlegible', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Accessible focus indicators for elderly users */
+  button:focus-visible, 
+  a:focus-visible, 
+  input:focus-visible, 
+  select:focus-visible {
+    outline: 3px solid #527961;
+    outline-offset: 2px;
+  }
+}
+
+/* Gentle transitions, reduced motion safety */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Large touch target utility */
+.touch-target {
+  min-height: 52px;
+  min-width: 52px;
+}
+
+.touch-target-lg {
+  min-height: 64px;
+}
