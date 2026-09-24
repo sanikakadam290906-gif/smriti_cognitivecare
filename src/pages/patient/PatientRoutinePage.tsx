@@ -4,13 +4,14 @@ import { useTranslation } from '../../i18n/LanguageContext';
 import { VoiceButton } from '../../components/ui/VoiceButton';
 import { dataService } from '../../services/supabase/dataService';
 import { Clock, CalendarCheck } from 'lucide-react';
+import { translateActivity } from '../../games/routine/routineGameEngine';
 
 interface PatientRoutinePageProps {
   patient: Patient;
 }
 
 export const PatientRoutinePage: React.FC<PatientRoutinePageProps> = ({ patient }) => {
-  const { t } = useTranslation();
+  const { language, t } = useTranslation();
   const [routines, setRoutines] = useState<RoutineItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -40,10 +41,10 @@ export const PatientRoutinePage: React.FC<PatientRoutinePageProps> = ({ patient 
             {t('navRoutine')}
           </h1>
           <p className="text-sm font-semibold text-ink-500">
-            {patient.name} • Daily schedule
+            {patient.name} • {t('dailySchedule')}
           </p>
         </div>
-        <VoiceButton textToSpeak="Here is your daily routine and activities for today." />
+        <VoiceButton textToSpeak={t('patientVoicePromptRoutine')} />
       </div>
 
       {loading ? (
@@ -65,7 +66,7 @@ export const PatientRoutinePage: React.FC<PatientRoutinePageProps> = ({ patient 
 
               <div>
                 <span className="text-xl sm:text-2xl font-extrabold text-ink-900 block leading-tight">
-                  {item.activity}
+                  {translateActivity(item.activity, language)}
                 </span>
               </div>
 

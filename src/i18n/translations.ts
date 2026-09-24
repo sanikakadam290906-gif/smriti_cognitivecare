@@ -64,6 +64,9 @@ export const translations: Record<Language, Record<string, string>> = {
     correct: 'Correct',
     timeTaken: 'Time',
     difficulty: 'Difficulty',
+    level: 'Level',
+    chooseCorrectItem: 'Choose the correct item:',
+    sequencePattern: 'Sequence Pattern',
     
     // Status
     morningDoseTaken: 'Morning dose taken',
@@ -79,75 +82,154 @@ export const translations: Record<Language, Record<string, string>> = {
     noSessionsYet: 'No game sessions recorded yet.',
     saveSuccess: 'Changes saved successfully.',
     saveError: 'Unable to save changes. Please try again.',
+
+    // Voice & Audio Status
+    voiceUnavailable: 'Voice audio is not available in your browser for this language. Please read the written instructions.',
+    voicePlaying: 'Speaking instructions...',
+    switchLanguage: 'Language',
+    selectLanguage: 'Select Language',
+    english: 'English',
+    assamese: 'Assamese (অসমীয়া)',
+    mizo: 'Mizo (Mizo ṭawng)',
+
+    // Instructions Panel Shared Headers
+    howToPlay: 'How to Play',
+    gameGoal: 'Game Goal',
+    stepsToPlay: 'Step-by-Step Instructions',
+    whatToTap: 'What to Tap',
+    resultFeedback: 'What Happens Next',
+    hideInstructions: 'Hide Instructions',
+    showInstructions: 'Show Instructions',
+
+    // Memory Match Instructions
+    memoryGoal: 'Find and match all the pairs of identical pictures.',
+    memoryStep1: 'Tap one card to turn it over.',
+    memoryStep2: 'Tap a second card to see if the picture matches.',
+    memoryStep3: 'If they match, both cards stay open and turn green.',
+    memoryStep4: 'If they do not match, both cards will flip back. Try to remember their places!',
+    memoryStep5: 'Keep going until you match all the pairs on the board.',
+    memoryTap: 'Tap any card on the grid.',
+    memoryFeedback: 'Matching pairs stay turned face up. Mismatched cards turn face down again.',
+    memoryVoiceScript: 'How to play Memory Match: Tap one card, then tap another card. Find two cards with the same picture. Match all the pairs to complete the game.',
+
+    // Find Object Instructions
+    findGoal: 'Spot the requested everyday item hidden inside the scene.',
+    findStep1: 'Look at the target item shown at the top of the screen.',
+    findStep2: 'Search for that exact item inside the picture scene.',
+    findStep3: 'When you spot the item, tap directly on it.',
+    findStep4: 'Find each item to complete all the rounds.',
+    findTap: 'Tap directly on the object inside the scene illustration.',
+    findFeedback: 'A green checkmark appears on a correct find. If incorrect, take your time and tap another item.',
+    findVoiceScript: 'How to play Find the Object: Look at the item shown at the top. Find that item inside the picture scene below. Tap the object when you see it.',
+
+    // Complete Pattern Instructions
+    patternGoal: 'Look at the repeating sequence and choose what comes next.',
+    patternStep1: 'Look at the sequence of items in a row from left to right.',
+    patternStep2: 'Notice the empty box marked with a question mark (?).',
+    patternStep3: 'Think about which item belongs in the question mark space.',
+    patternStep4: 'Tap the matching choice from the buttons below.',
+    patternTap: 'Tap the correct picture button below the sequence.',
+    patternFeedback: 'Correct choice turns green with a checkmark. Incorrect choice lets you try again.',
+    patternVoiceScript: 'How to play Complete the Pattern: Look at the sequence pattern. Find what comes next in place of the question mark. Choose the matching picture from the choices below.',
+
+    // Routine Recall Instructions
+    routineGoal: 'Recall your familiar daily routine and answer simple questions.',
+    routineStep1: 'Read or listen to the question about daily routines.',
+    routineStep2: 'Think about what activity you usually do at that time.',
+    routineStep3: 'Tap the answer card that matches your daily routine.',
+    routineTap: 'Tap one of the large answer option cards.',
+    routineFeedback: 'Turns green for correct answers, and gently shows red if not correct before moving on.',
+    routineVoiceScript: 'How to play Routine Recall: Read or listen to the question about your daily routine. Think about your daily schedule, then tap the correct answer.',
+
+    // Caregiver & Navigation Additional
+    caregiverOverview: 'Caregiver Overview',
+    managePatients: 'Manage Patients',
+    activePatients: 'active patients',
+    allDosesTaken: 'All doses taken',
+    dosesTakenOf: 'taken',
+    lastActivity: 'Last activity',
+    openPatientCare: 'Open Patient Care',
+    dailySchedule: 'Daily schedule',
+    viewAll: 'View all',
+    personalRoutineQuestion: 'Personal Routine Question',
+
+    // Voice Prompts for Pages
+    patientVoicePromptHome: 'Good morning. Check your daily medicines and games below.',
+    patientVoicePromptMeds: 'Here are your scheduled medicines for today. Tap Taken once you have taken your medicine.',
+    patientVoicePromptRoutine: 'Here is your daily routine and schedule for today.',
+    patientVoicePromptGames: 'Choose an activity to play. Tap any card to begin.',
   },
   
   as: {
     // Branding & Core
     appName: 'স্মৃতি',
-    appTagline: 'জ্ঞানমূলক যত্ন মঞ্চ',
+    appTagline: 'জ্ঞানমূলক আৰু স্মৃতি যত্ন সেৱা',
     appStatement: 'স্মৃতি, দৈনন্দিন নিয়ম আৰু সহজ যত্নৰ বাবে সহায়।',
-    disclaimer: 'স্মৃতিয়ে স্মৃতিশক্তিৰ সংগতি আৰু পৰিচৰ্যাকৰ্তাৰ তত্বাৱধানত সহায় কৰে। ই কোনো চিকিৎসা নিদান নকৰে।',
+    disclaimer: 'স্মৃতিয়ে স্মৃতিশক্তিৰ সজাগতা আৰু পৰিচৰ্যাকৰ্তাৰ তত্ত্বাৱধানত সহায় কৰে। ই কোনো চিকিৎসা নিদান নকৰে।',
     
     // Roles & Navigation
     caregiver: 'পৰিচৰ্যাকৰ্তা',
-    patient: 'অভিভাৱ্য / ৰোগী',
+    patient: 'ৰোগী',
     demoMode: 'ডেম’ মোড',
-    continueAsCaregiver: 'পৰিচৰ্যাকৰ্তা হিচাপে যাওক',
-    continueAsPatient: 'ৰোগী হিচাপে যাওক',
+    continueAsCaregiver: 'পৰিচৰ্যাকৰ্তা হিচাপে আগবাঢ়ক',
+    continueAsPatient: 'ৰোগী হিচাপে আগবাঢ়ক',
     exploreDemo: 'ডেম’ পৰীক্ষা কৰক',
     
     // Navigation items
     navHome: 'মুখ্য পৃষ্ঠা',
-    navGames: 'খেলাসমূহ',
+    navGames: 'খেলসমূহ',
     navMedicines: 'ঔষধসমূহ',
-    navRoutine: 'দৈনন্দিন তালিকা',
+    navRoutine: 'দৈনন্দিন নিয়ম',
     navDashboard: 'ডেশ্বব’ৰ্ড',
     navPatients: 'ৰোগীসকল',
-    navCarePlans: 'যত্ন পৰিকল্পনা',
+    navCarePlans: 'যত্নৰ পৰিকল্পনা',
     navProgress: 'অগ্ৰগতি',
     navSettings: 'ছেটিংছ',
     navExit: 'প্ৰস্থান',
     
     // Patient Greetings & microcopy
     goodMorning: 'শুভ প্ৰভাত',
-    letsHaveAGoodDay: 'আজিৰ দিনটো আনন্দৰে কটাওক।',
+    letsHaveAGoodDay: 'আজিৰ দিনটো আনন্দৰে পাৰ কৰোঁ আহক।',
     todaysMedication: 'আজিৰ ঔষধ',
     todaysActivities: 'আজিৰ কাৰ্যসূচী',
     hearInstructions: 'নিৰ্দেশনা শুনক',
     
     // Actions
-    taken: 'গ্ৰহণ কৰা হ’ল',
-    remindMeLater: 'পাছত সোঁৱৰাব',
-    markTaken: 'ঔষধ গ্ৰহণ চিহ্নিত কৰক',
-    markPending: 'বাকী থকা অৱস্থালৈ নিয়ক',
+    taken: 'খোৱা হ’ল',
+    remindMeLater: 'পিছত সোঁৱৰাব',
+    markTaken: 'ঔষধ খোৱা বুলি চিহ্নিত কৰক',
+    markPending: 'বাকী আছে বুলি কৰক',
     backToGames: '← খেললৈ উভতি যাওক',
-    done: 'সম্পূৰ্ণ হ’ল',
+    done: 'হৈ গ’ল',
     start: 'আৰম্ভ কৰক',
-    nextRound: 'পৰৱৰ্তী ৰাউণ্ড',
-    tryAgain: 'পুনৰ চেষ্টা কৰক',
-    takeYourTime: 'সময় লৈ উত্তৰ দিয়ক',
+    nextRound: 'পৰৱৰ্তী স্তৰ',
+    tryAgain: 'আকৌ চেষ্টা কৰক',
+    takeYourTime: 'ধীৰে-সুস্থে সময় লৈ কৰক',
     
     // Game Titles
-    memoryMatch: 'স্মৃতি সংগতি',
+    memoryMatch: 'মনত ৰখাৰ খেল',
     findTheObject: 'বস্তু বিচাৰক',
-    completeThePattern: 'শৃংখলা সম্পূৰ্ণ কৰক',
-    routineRecall: 'দৈনন্দিন স্মৃতি',
+    completeThePattern: 'নক্সা সম্পূৰ্ণ কৰক',
+    routineRecall: 'দৈনন্দিন নিয়মৰ স্মৃতি',
     
     // Game In-game Microcopy
     findPromptPrefix: 'বিচাৰক',
-    whichComesAfter: 'ইয়াৰ পাছত কি আহে',
-    whichComesBefore: 'ইয়াৰ আগত কি আহে',
-    whatDoYouDoAt: 'এই সময়ত আপুনি কি কৰে',
-    whichComesFirst: 'কোনটো আগতে আহে?',
+    whichComesAfter: 'ইয়াৰ পিছত কি আহে?',
+    whichComesBefore: 'ইয়াৰ আগত কি আহে?',
+    whatDoYouDoAt: 'এই সময়ত কি কৰা হয়?',
+    whichComesFirst: 'কোনটো কাম আগতে কৰা হয়?',
     wellDone: 'অতি উত্তম!',
     accuracy: 'সঠিকতা',
     correct: 'শুদ্ধ উত্তৰ',
     timeTaken: 'সময়',
     difficulty: 'স্তৰ',
+    level: 'স্তৰ',
+    chooseCorrectItem: 'শুদ্ধ বস্তুটো বাছি লওক:',
+    sequencePattern: 'নক্সাৰ ক্ৰম',
     
     // Status
-    morningDoseTaken: 'ৰাতিপুৱাৰ ঔষধ লোৱা হ’ল',
-    pendingDose: 'বাকী আছে',
+    morningDoseTaken: 'ৰাতিপুৱাৰ ঔষধ খোৱা হ’ল',
+    pendingDose: 'ঔষধ খাবলৈ বাকী আছে',
     easy: 'সহজ',
     medium: 'মধ্যম',
     hard: 'কঠিন',
@@ -159,6 +241,82 @@ export const translations: Record<Language, Record<string, string>> = {
     noSessionsYet: 'এতিয়ালৈকে কোনো খেলৰ তথ্য নাই।',
     saveSuccess: 'পৰিবৰ্তন সফলভাৱে সংৰক্ষণ কৰা হ’ল।',
     saveError: 'সংৰক্ষণ কৰাত অসুবিধা হৈছে। অনুগ্ৰহ কৰি পুনৰ চেষ্টা কৰক।',
+
+    // Voice & Audio Status
+    voiceUnavailable: 'আপোনাৰ ব্ৰাউজাৰত অসমীয়া কণ্ঠস্বৰ উপলব্ধ নহয়। অনুগ্ৰহ কৰি লিখিত নিৰ্দেশনা পঢ়ক।',
+    voicePlaying: 'নিৰ্দেশনা কোৱা হৈ আছে...',
+    switchLanguage: 'ভাষা',
+    selectLanguage: 'ভাষা বাছক',
+    english: 'English (ইংৰাজী)',
+    assamese: 'অসমীয়া',
+    mizo: 'Mizo (মিজো)',
+
+    // Instructions Panel Shared Headers
+    howToPlay: 'কেনেকৈ খেলিব',
+    gameGoal: 'খেলৰ লক্ষ্য',
+    stepsToPlay: 'খেলৰ নিয়ম',
+    whatToTap: 'ক’ত টিপিব',
+    resultFeedback: 'উত্তৰৰ ফলাফল',
+    hideInstructions: 'নিৰ্দেশনা লুকুৱাওক',
+    showInstructions: 'নিৰ্দেশনা দেখুৱাওক',
+
+    // Memory Match Instructions
+    memoryGoal: 'একে ছবি থকা দুখন কাৰ্ডৰ জোৰা বিচাৰি মিল কৰক।',
+    memoryStep1: '১. প্ৰথমে যিকোনো এখন কাৰ্ডত টিপক।',
+    memoryStep2: '২. আন এখন কাৰ্ডত টিপি দুয়োখনৰ ছবি একে নে চাওক।',
+    memoryStep3: '৩. দুয়োখন ছবি মিলিলে কাৰ্ড দুখন মেল খাই থাকিব আৰু সেউজীয়া হ’ব।',
+    memoryStep4: '৪. মিল নাখালে কাৰ্ড দুখন পুনৰ উলটি যাব; ছবি মনত ৰাখক!',
+    memoryStep5: '৫. এনেদৰে সকলো জোৰা মিল কৰক।',
+    memoryTap: 'ব’ৰ্ডত থকা কাৰ্ডবোৰত টিপক।',
+    memoryFeedback: 'শুদ্ধ জোৰাবোৰ মেল খাই থাকে। মিল নহ’লে কাৰ্ডবোৰ পুনৰ উলটি যায়।',
+    memoryVoiceScript: 'মনত ৰখাৰ খেলৰ নিৰ্দেশনা: প্ৰথমে এখন কাৰ্ডত টিপক, তাৰ পিছত আন এখন কাৰ্ডত টিপক। একে ছবি থকা দুখন কাৰ্ড বিচাৰি সকলো জোৰা মিল কৰক।',
+
+    // Find Object Instructions
+    findGoal: 'তলৰ দৃশ্যটোৰ ভিতৰত বিচৰা বস্তুটো বিচাৰি উলিওৱক।',
+    findStep1: '১. ওপৰত দিয়া বস্তুটোৰ নাম আৰু ছবি চাওক।',
+    findStep2: '২. তলৰ ছবিৰ দৃশ্যটোত সেই বস্তুটো ক’ত আছে বিচাৰক।',
+    findStep3: '৩. বস্তুটো দেখা পালে তাৰ ওপৰত পোনপটীয়াকৈ আঙুলিৰে টিপক।',
+    findStep4: '৪. সকলো বস্তু বিচাৰি খেল সম্পূৰ্ণ কৰক।',
+    findTap: 'দৃশ্যটোৰ ভিতৰত থকা বস্তুটোত টিপক।',
+    findFeedback: 'শুদ্ধ হ’লে সেউজীয়া চিন দেখিব। ভুল হ’লে ধীৰে-সুস্থে আন এটা বস্তুত টিপক।',
+    findVoiceScript: 'বস্তু বিচাৰক খেলৰ নিৰ্দেশনা: ওপৰৰ বস্তুটোৰ ছবি আৰু নাম চাওক। তলৰ দৃশ্যটোত সেই বস্তুটো বিচাৰি তাত টিপক।',
+
+    // Complete Pattern Instructions
+    patternGoal: 'সজোৱা নক্সাটো চাই প্ৰশ্নবোধক খালী বাকচত কি বহিব বাছি উলিওৱক।',
+    patternStep1: '১. বাওঁফালৰ পৰা সোঁফাললৈ ছবিৰ ক্ৰমটো চাওক।',
+    patternStep2: '২. প্ৰশ্নবোধক (?) চিন থকা খালী বাকচটো লক্ষ্য কৰক।',
+    patternStep3: '৩. ক্ৰম অনুসৰি প্ৰশ্নবোধক বাকচত কি বহিব ভাবক।',
+    patternStep4: '৪. তলৰ বিকল্প ছবিবোৰৰ পৰা শুদ্ধ ছবিখন বাছি টিপক।',
+    patternTap: 'ক্ৰমৰ তলত থকা বিকল্প ছবি বুটামত টিপক।',
+    patternFeedback: 'শুদ্ধ উত্তৰ হ’লে সেউজীয়া টিক চিন উঠিব। ভুল হ’লে পুনৰ চেষ্টা কৰিব পাৰিব।',
+    patternVoiceScript: 'নক্সা খেলৰ নিৰ্দেশনা: ওপৰৰ সজোৱা ক্ৰমটো চাওক। প্ৰশ্নবোধক বাকচটোত কি বহিব, তলৰ ছবিবোৰৰ পৰা শুদ্ধ ছবিখন বাছি টিপক।',
+
+    // Routine Recall Instructions
+    routineGoal: 'আপোনাৰ দৈনন্দিন কাম আৰু নিয়ম মনত পেলাই সহজ প্ৰশ্নৰ উত্তৰ দিয়ক।',
+    routineStep1: '১. প্ৰশ্নটো পঢ়ক বা নিৰ্দেশনা শুনক।',
+    routineStep2: '২. আপুনি দৈনন্দিন কি কাম কেতিয়া কৰে মনত পেলাওক।',
+    routineStep3: '৩. শুদ্ধ উত্তৰ লিখা থকা কাৰ্ডখনত টিপক।',
+    routineTap: 'তলৰ ডাঙৰ উত্তৰ কাৰ্ডবোৰৰ যিকোনো এটাত টিপক।',
+    routineFeedback: 'শুদ্ধ হ’লে সেউজীয়া আৰু ভুল হ’লে ৰঙা ৰং দেখিব, তাৰ পিছত পৰৱৰ্তী প্ৰশ্ন আহিব।',
+    routineVoiceScript: 'দৈনন্দিন নিয়ম খেলৰ নিৰ্দেশনা: প্ৰশ্নটো শুনক বা পঢ়ক। আপোনাৰ দৈনন্দিন কামৰ নিয়ম মনত পেলাই তলৰ শুদ্ধ উত্তৰটোত টিপক।',
+
+    // Caregiver & Navigation Additional
+    caregiverOverview: 'পৰিচৰ্যাকৰ্তাৰ খতিয়ান',
+    managePatients: 'ৰোগী ব্যৱস্থাপনা',
+    activePatients: 'জন সক্ৰিয় ৰোগী',
+    allDosesTaken: 'সকলো ঔষধ খোৱা হ’ল',
+    dosesTakenOf: 'খোৱা হ’ল',
+    lastActivity: 'শেহতীয়া কাৰ্য',
+    openPatientCare: 'ৰোগীৰ তথ্য খোলক',
+    dailySchedule: 'দৈনন্দিন তালিকা',
+    viewAll: 'সকলো চাওক',
+    personalRoutineQuestion: 'ব্যক্তিগত দৈনন্দিন কামৰ প্ৰশ্ন',
+
+    // Voice Prompts for Pages
+    patientVoicePromptHome: 'শুভ প্ৰভাত। আপোনাৰ আজিৰ ঔষধ আৰু কাৰ্যসূচী তলত চাওক।',
+    patientVoicePromptMeds: 'আজিৰ ঔষধৰ সময়সূচী। ঔষধ খোৱাৰ পিছত খোৱা হ’ল বুটামত টিপক।',
+    patientVoicePromptRoutine: 'আজিৰ দিনটোৰ কাম আৰু নিয়মৰ তালিকা।',
+    patientVoicePromptGames: 'মন পচন্দৰ খেল বাছক। খেলিবলৈ যিকোনো কাৰ্ডত টিপক।',
   },
   
   lus: {
@@ -224,6 +382,9 @@ export const translations: Record<Language, Record<string, string>> = {
     correct: 'A dik',
     timeTaken: 'Hun',
     difficulty: 'Harsat dan',
+    level: 'Level',
+    chooseCorrectItem: 'A dik ber thlang rawh:',
+    sequencePattern: 'A kalhmang indawt',
     
     // Status
     morningDoseTaken: 'Zing damdawi ei tawh',
@@ -239,5 +400,81 @@ export const translations: Record<Language, Record<string, string>> = {
     noSessionsYet: 'Infiahna record a la awm lo.',
     saveSuccess: 'Hlawhtling takin vawn a ni.',
     saveError: 'Vawn theih a ni lo, khawngaihin ti nawn leh rawh.',
+
+    // Voice & Audio Status
+    voiceUnavailable: 'I browser-ah Mizo aw a awm rih lo. Khawngaihin thu inziak hi chhiar rawh.',
+    voicePlaying: 'Aw a chhuak mek...',
+    switchLanguage: 'Ṭawng',
+    selectLanguage: 'Ṭawng thlang rawh',
+    english: 'English',
+    assamese: 'Assamese (অসমীয়া)',
+    mizo: 'Mizo ṭawng',
+
+    // Instructions Panel Shared Headers
+    howToPlay: 'Engtin nge khelh tur',
+    gameGoal: 'Thiltum',
+    stepsToPlay: 'A tih dan',
+    whatToTap: 'Khawi nge hmeh tur',
+    resultFeedback: 'Chhanna hriattirna',
+    hideInstructions: 'Thup rawh',
+    showInstructions: 'Tarlang rawh',
+
+    // Memory Match Instructions
+    memoryGoal: 'Thlalak inang kawp zawng chhuak rawh.',
+    memoryStep1: 'Card pakhat hmet la keu rawh.',
+    memoryStep2: 'A dang leh pakhat hmet la, an inang em en rawh.',
+    memoryStep3: 'An inan chuan an inhawng reng ang a, an hring ang.',
+    memoryStep4: 'An inmil loh chuan an inkhup leh ang; an awmna hrereng rawh!',
+    memoryStep5: 'A kawp zawng zawng zawng chhuak rawh.',
+    memoryTap: 'Card awmte hi hmet rawh.',
+    memoryFeedback: 'A inmil chu an inhawng reng ang a, a inmil lo chu an inkhup leh ang.',
+    memoryVoiceScript: 'Hriat kawp zawng khelh dan: Card pakhat hmet la, a dang pakhat hmet leh rawh. Thlalak inang kawp zawng chhuak rawh.',
+
+    // Find Object Instructions
+    findGoal: 'Lemziak chhunga thil awm zawng chhuak rawh.',
+    findStep1: 'A chunga thil hming leh lem hi en rawh.',
+    findStep2: 'A hnuaia lemziak chhungah khian zawng rawh.',
+    findStep3: 'I hmuh hunah thil awmna zawnah tak hmet rawh.',
+    findStep4: 'A zavaiin zawng chhuak vek rawh.',
+    findTap: 'Lemziak chhunga thil awm hi hmet rawh.',
+    findFeedback: 'A dik chuan hring a eng ang a, a dik loh chuan ti nawn leh rawh.',
+    findVoiceScript: 'Thil zawng rawh khelh dan: A chunga thil awm hi en la, a hnuaia lemziak chhungah zawng rawh. A zawnah hmet rawh.',
+
+    // Complete Pattern Instructions
+    patternGoal: 'A kalhmang zuiin a dawt tur zawng chhuak rawh.',
+    patternStep1: 'Veilam aṭanga dinglamah a indawt dan hi en rawh.',
+    patternStep2: 'Hmun ruak (?) awmna hi en la.',
+    patternStep3: 'A dawtah eng nge awm tur ngaihtuah rawh.',
+    patternStep4: 'A hnuaia thil awm aṭang hian a dik ber thlang rawh.',
+    patternTap: 'A hnuaia chhanna awmte hi hmet rawh.',
+    patternFeedback: 'A dik chuan hringin a inthlang ang a, a dik loh chuan ti nawn leh rawh.',
+    patternVoiceScript: 'A kalhmang zawm rawh khelh dan: A indawt dan hi en la, hmun ruakah khian eng nge awm tur thlang rawh. A hnuaia thil awm aṭang khian hmet rawh.',
+
+    // Routine Recall Instructions
+    routineGoal: 'Nitin i thiltih ṭhin hrechhuak la zawhna chhang rawh.',
+    routineStep1: 'Zawhna hi chhiar la emaw ngaithla rawh.',
+    routineStep2: 'Chumi huna i thiltih ṭhin chu ngaihtuah rawh.',
+    routineStep3: 'Chhanna dik ber zawnah hmet rawh.',
+    routineTap: 'Chhanna card awmte hi hmet rawh.',
+    routineFeedback: 'A dik chuan hring a lo lang ang a, a dik loh chuan sen.',
+    routineVoiceScript: 'Nitin hunbi khelh dan: Zawhna hi chhiar la emaw ngaithla rawh. Nitin i tih ṭhin ngaihtuah la, chhanna dik ber hi hmet rawh.',
+
+    // Caregiver & Navigation Additional
+    caregiverOverview: 'Enkawltu Enchhinna',
+    managePatients: 'Damlo te buaipui',
+    activePatients: 'damlo awm mekte',
+    allDosesTaken: 'Damdawi ei vek tawh',
+    dosesTakenOf: 'ei tawh',
+    lastActivity: 'Thiltih hnuhnung ber',
+    openPatientCare: 'Damlo enkawlna hawng rawh',
+    dailySchedule: 'Nitin hunbi',
+    viewAll: 'A zavaiin en rawh',
+    personalRoutineQuestion: 'Mahni nitin hunbi zawhna',
+
+    // Voice Prompts for Pages
+    patientVoicePromptHome: 'Chibai le. Vawiin damdawi leh infiahna te hi en rawh.',
+    patientVoicePromptMeds: 'Vawiin damdawi ei turte a ni a. I ei zawhah ei tawh tih hi hmet rawh.',
+    patientVoicePromptRoutine: 'Vawiin atan i hunbi leh thiltih turte a ni e.',
+    patientVoicePromptGames: 'Infiahna duh ber thlang la, tan turin hmet rawh.',
   },
 };

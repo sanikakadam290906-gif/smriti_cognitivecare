@@ -252,7 +252,7 @@ export const CULTURAL_ITEMS: CulturalItem[] = [
     id: 'bamboo_fan',
     name: {
       en: 'Handmade Bamboo Fan',
-      as: 'বাঁহৰ বিchannelsনী',
+      as: 'বাঁহৰ বিচনী',
       lus: 'Mau zapna',
     },
     region: 'NER General',

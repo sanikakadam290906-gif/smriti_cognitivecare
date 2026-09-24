@@ -5,6 +5,7 @@ import { DifficultyLevel } from '../../types';
 import { GeneratedRoutineQuestion, generateRoutineQuestions } from './routineGameEngine';
 import { GameHeader } from '../../components/games/GameHeader';
 import { GameResultModal } from '../../components/games/GameResultModal';
+import { GameInstructionsPanel } from '../../components/games/GameInstructionsPanel';
 import { dataService } from '../../services/supabase/dataService';
 import { Check, X, CalendarCheck } from 'lucide-react';
 
@@ -14,7 +15,7 @@ interface RoutineRecallGameProps {
 }
 
 export const RoutineRecallGame: React.FC<RoutineRecallGameProps> = ({ patientId, difficulty }) => {
-  const { t } = useTranslation();
+  const { language, t } = useTranslation();
   const navigate = useNavigate();
 
   const [questions, setQuestions] = useState<GeneratedRoutineQuestion[]>([]);
@@ -33,12 +34,12 @@ export const RoutineRecallGame: React.FC<RoutineRecallGameProps> = ({ patientId,
 
   useEffect(() => {
     loadRoutineAndGenerate();
-  }, [patientId, difficulty]);
+  }, [patientId, difficulty, language]);
 
   const loadRoutineAndGenerate = async () => {
     setIsLoading(true);
     const routines = await dataService.getRoutines(patientId);
-    const generated = generateRoutineQuestions(routines, difficulty);
+    const generated = generateRoutineQuestions(routines, difficulty, language);
     setQuestions(generated);
     setCurrentIdx(0);
     setCorrectCount(0);
@@ -129,7 +130,7 @@ export const RoutineRecallGame: React.FC<RoutineRecallGameProps> = ({ patientId,
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6">
+    <div className="max-w-6xl mx-auto px-3 sm:px-4 py-4 sm:py-6 pb-32 w-full min-h-[calc(100vh-120px)]">
       <GameHeader
         title={t('routineRecall')}
         currentRound={currentIdx + 1}
@@ -138,54 +139,69 @@ export const RoutineRecallGame: React.FC<RoutineRecallGameProps> = ({ patientId,
         instructionText={currentQ.prompt}
       />
 
-      {/* Routine Prompt Card */}
-      <div className="bg-cream-50 border-2 border-borderBase rounded-2xl p-6 sm:p-8 mb-8 shadow-subtle flex items-start gap-4">
-        <div className="p-3 bg-white border border-borderBase rounded-xl shrink-0">
-          <CalendarCheck className="w-8 h-8 text-sage-600" />
+      <div className="flex flex-col lg:flex-row gap-6 items-start">
+        {/* Mobile Instructions Panel (above game on mobile / tablet) */}
+        <div className="w-full lg:hidden">
+          <GameInstructionsPanel gameType="routine" isMobileOnly />
         </div>
-        <div>
-          <span className="block text-xs sm:text-sm font-semibold text-ink-500 uppercase tracking-wide mb-1">
-            Personal Routine Question
-          </span>
-          <h2 className="text-xl sm:text-2xl font-bold text-ink-900 leading-snug">
-            {currentQ.prompt}
-          </h2>
-        </div>
-      </div>
 
-      {/* Answer Options */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
-        {currentQ.options.map((opt) => {
-          const isSelected = selectedOption === opt;
-          const isCorrect = opt === currentQ.correctAnswer;
+        {/* Main Board & Options Area */}
+        <div className="flex-1 w-full min-w-0">
+          {/* Routine Prompt Card */}
+          <div className="bg-cream-50 border-2 border-borderBase rounded-3xl p-5 sm:p-7 mb-6 shadow-subtle flex items-start gap-3.5 sm:gap-4">
+            <div className="p-2.5 sm:p-3 bg-white border border-borderBase rounded-2xl shrink-0 shadow-xs">
+              <CalendarCheck className="w-7 h-7 sm:w-8 sm:h-8 text-sage-600" />
+            </div>
+            <div>
+              <span className="block text-xs sm:text-sm font-bold text-ink-500 uppercase tracking-wide mb-1">
+                {t('personalRoutineQuestion')}
+              </span>
+              <h2 className="text-xl sm:text-2xl font-black text-ink-900 leading-snug">
+                {currentQ.prompt}
+              </h2>
+            </div>
+          </div>
 
-          return (
-            <button
-              key={opt}
-              type="button"
-              onClick={() => handleSelectOption(opt)}
-              disabled={Boolean(selectedOption)}
-              className={`p-5 rounded-2xl border-2 text-left font-bold text-lg sm:text-xl transition-all touch-target-lg flex items-center justify-between select-none ${
-                isSelected && isCorrect
-                  ? 'bg-emerald-50 border-emerald-600 text-emerald-900 ring-2 ring-emerald-500'
-                  : isSelected && !isCorrect
-                  ? 'bg-rose-50 border-rose-600 text-rose-900 ring-2 ring-rose-500'
-                  : 'bg-white hover:bg-cream-200 border-borderBase text-ink-900 shadow-card active:scale-98'
-              }`}
-            >
-              <span>{opt}</span>
-              {isSelected && (
-                <span>
-                  {isCorrect ? (
-                    <Check className="w-6 h-6 text-emerald-600" />
-                  ) : (
-                    <X className="w-6 h-6 text-rose-600" />
+          {/* Answer Options */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 max-w-2xl mx-auto">
+            {currentQ.options.map((opt) => {
+              const isSelected = selectedOption === opt;
+              const isCorrect = opt === currentQ.correctAnswer;
+
+              return (
+                <button
+                  key={opt}
+                  type="button"
+                  onClick={() => handleSelectOption(opt)}
+                  disabled={Boolean(selectedOption)}
+                  className={`p-4 sm:p-5 rounded-2xl border-2 text-left font-extrabold text-base sm:text-lg md:text-xl transition-all touch-target touch-manipulation flex items-center justify-between select-none ${
+                    isSelected && isCorrect
+                      ? 'bg-emerald-50 border-emerald-600 text-emerald-900 ring-2 ring-emerald-500 shadow-md'
+                      : isSelected && !isCorrect
+                      ? 'bg-rose-50 border-rose-600 text-rose-900 ring-2 ring-rose-500 shadow-md'
+                      : 'bg-white hover:bg-cream-200 border-borderBase text-ink-900 shadow-card active:scale-98'
+                  }`}
+                >
+                  <span className="leading-snug">{opt}</span>
+                  {isSelected && (
+                    <span className="shrink-0 ml-2">
+                      {isCorrect ? (
+                        <Check className="w-6 h-6 text-emerald-600 stroke-[3]" />
+                      ) : (
+                        <X className="w-6 h-6 text-rose-600 stroke-[3]" />
+                      )}
+                    </span>
                   )}
-                </span>
-              )}
-            </button>
-          );
-        })}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Desktop Sticky Side Instructions Panel (beside game on desktop) */}
+        <aside className="hidden lg:block w-80 xl:w-96 shrink-0 sticky top-24">
+          <GameInstructionsPanel gameType="routine" isDesktopOnly />
+        </aside>
       </div>
 
       <GameResultModal

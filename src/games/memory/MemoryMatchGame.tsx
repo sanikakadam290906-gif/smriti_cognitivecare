@@ -5,6 +5,7 @@ import { MemoryCard } from '../../types/games';
 import { generateMemorySession } from './memoryEngine';
 import { GameHeader } from '../../components/games/GameHeader';
 import { GameResultModal } from '../../components/games/GameResultModal';
+import { GameInstructionsPanel } from '../../components/games/GameInstructionsPanel';
 import { CulturalIcon } from '../../components/ui/CulturalIcon';
 import { dataService } from '../../services/supabase/dataService';
 import { DifficultyLevel } from '../../types';
@@ -130,46 +131,65 @@ export const MemoryMatchGame: React.FC<MemoryMatchGameProps> = ({ patientId, dif
       ? 'grid-cols-2 sm:grid-cols-3 max-w-xl'
       : difficulty === 'Medium'
       ? 'grid-cols-2 sm:grid-cols-5 max-w-3xl'
-      : 'grid-cols-4 sm:grid-cols-4 max-w-3xl';
+      : 'grid-cols-4 max-w-3xl';
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6">
+    <div className="max-w-6xl mx-auto px-3 sm:px-4 py-4 sm:py-6 pb-32 w-full min-h-[calc(100vh-120px)]">
       <GameHeader
         title={t('memoryMatch')}
         difficulty={difficulty}
-        instructionText="Match the pairs of familiar items. Take your time."
+        instructionText={t('memoryVoiceScript')}
       />
 
-      <div className={`grid ${gridColsClass} gap-3 sm:gap-4 mx-auto`}>
-        {cards.map((card, idx) => (
-          <button
-            key={card.cardId}
-            type="button"
-            onClick={() => handleCardClick(idx)}
-            disabled={card.isMatched || card.isFlipped || isChecking}
-            className={`aspect-square p-3 rounded-2xl flex flex-col items-center justify-center text-center transition-all select-none border-2 touch-target-lg ${
-              card.isMatched
-                ? 'bg-sage-100 border-sage-500 opacity-80 cursor-default'
-                : card.isFlipped
-                ? 'bg-white border-sage-600 shadow-card'
-                : 'bg-cream-200 hover:bg-cream-300 border-borderBase active:scale-98'
-            }`}
-            aria-label={card.isFlipped || card.isMatched ? card.name : 'Hidden card'}
-          >
-            {card.isFlipped || card.isMatched ? (
-              <div className="flex flex-col items-center justify-center gap-1.5 animate-in zoom-in-90 duration-150">
-                <CulturalIcon type={card.iconType} size={48} className="w-12 h-12" />
-                <span className="text-xs sm:text-sm font-bold text-ink-900 line-clamp-1">
-                  {card.name}
-                </span>
-              </div>
-            ) : (
-              <div className="w-10 h-10 rounded-full border-2 border-borderBase bg-cream-100 flex items-center justify-center text-ink-500 font-bold text-lg">
-                ?
-              </div>
-            )}
-          </button>
-        ))}
+      <div className="flex flex-col lg:flex-row gap-6 items-start">
+        {/* Mobile Instruction Panel (above game on mobile / tablet) */}
+        <div className="w-full lg:hidden">
+          <GameInstructionsPanel gameType="memory" isMobileOnly />
+        </div>
+
+        {/* Main Board Area */}
+        <div className="flex-1 w-full min-w-0">
+          <div className={`grid ${gridColsClass} gap-2.5 sm:gap-4 mx-auto`}>
+            {cards.map((card, idx) => (
+              <button
+                key={card.cardId}
+                type="button"
+                onClick={() => handleCardClick(idx)}
+                disabled={card.isMatched || card.isFlipped || isChecking}
+                className={`aspect-square p-2 sm:p-3 rounded-2xl flex flex-col items-center justify-center text-center transition-all select-none border-2 touch-target touch-manipulation ${
+                  card.isMatched
+                    ? 'bg-sage-100 border-sage-500 opacity-90 cursor-default ring-2 ring-emerald-400'
+                    : card.isFlipped
+                    ? 'bg-white border-sage-600 shadow-card'
+                    : 'bg-cream-200 hover:bg-cream-300 border-borderBase active:scale-98 shadow-xs'
+                }`}
+                aria-label={card.isFlipped || card.isMatched ? card.name : 'Hidden card'}
+              >
+                {card.isFlipped || card.isMatched ? (
+                  <div className="flex flex-col items-center justify-center gap-1 animate-in zoom-in-90 duration-150 w-full">
+                    <CulturalIcon
+                      type={card.iconType}
+                      size={44}
+                      className="w-9 h-9 sm:w-12 sm:h-12 shrink-0"
+                    />
+                    <span className="text-[11px] sm:text-xs md:text-sm font-bold text-ink-900 line-clamp-1 px-0.5">
+                      {card.name}
+                    </span>
+                  </div>
+                ) : (
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-borderBase bg-cream-100 flex items-center justify-center text-ink-500 font-bold text-base sm:text-lg">
+                    ?
+                  </div>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Desktop Sticky Side Instructions Panel (beside game on desktop) */}
+        <aside className="hidden lg:block w-80 xl:w-96 shrink-0 sticky top-24">
+          <GameInstructionsPanel gameType="memory" isDesktopOnly />
+        </aside>
       </div>
 
       <GameResultModal

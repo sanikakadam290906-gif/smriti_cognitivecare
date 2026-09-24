@@ -93,21 +93,10 @@ export const AppContent: React.FC = () => {
   const handleSelectPatient = (id: string) => {
     setActivePatientId(id);
     localStorage.setItem('smriti_active_patient_id', id);
-
-    const targetPatient = patients.find((p) => p.id === id);
-    if (targetPatient) {
-      setLanguage(targetPatient.language);
-    }
   };
 
   const activePatient =
     patients.find((p) => p.id === activePatientId) || patients[0] || null;
-
-  useEffect(() => {
-    if (activePatient && window.location.pathname.startsWith('/patient')) {
-      setLanguage(activePatient.language);
-    }
-  }, [activePatient?.id]);
 
   if (loading) {
     return (

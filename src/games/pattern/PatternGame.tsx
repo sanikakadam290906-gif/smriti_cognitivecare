@@ -6,6 +6,7 @@ import { PatternRound } from '../../types/games';
 import { generatePatternSession } from './patternEngine';
 import { GameHeader } from '../../components/games/GameHeader';
 import { GameResultModal } from '../../components/games/GameResultModal';
+import { GameInstructionsPanel } from '../../components/games/GameInstructionsPanel';
 import { CulturalIcon } from '../../components/ui/CulturalIcon';
 import { dataService } from '../../services/supabase/dataService';
 import { Check, X } from 'lucide-react';
@@ -113,106 +114,121 @@ export const PatternGame: React.FC<PatternGameProps> = ({ patientId, difficulty 
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6">
+    <div className="max-w-6xl mx-auto px-3 sm:px-4 py-4 sm:py-6 pb-32 w-full min-h-[calc(100vh-120px)]">
       <GameHeader
         title={t('completeThePattern')}
         currentRound={currentRoundIdx + 1}
         totalRounds={rounds.length}
         difficulty={difficulty}
-        instructionText="Look at the sequence and choose the item that completes the pattern."
+        instructionText={t('patternVoiceScript')}
       />
 
-      {/* Pattern Sequence Strip */}
-      <div className="bg-cream-50 border-2 border-borderBase rounded-2xl p-4 sm:p-8 mb-8 shadow-subtle">
-        <span className="block text-center text-sm font-semibold text-ink-500 uppercase tracking-wider mb-6">
-          Sequence Pattern
-        </span>
-
-        <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-4">
-          {currentRound.sequence.map((element, idx) => {
-            const isMissingSlot = idx === currentRound.missingIndex;
-
-            if (isMissingSlot) {
-              return (
-                <div
-                  key={`missing-${idx}`}
-                  className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl border-3 border-dashed border-sage-500 bg-sage-50/60 flex items-center justify-center text-sage-700 font-extrabold text-2xl sm:text-3xl shadow-inner animate-pulse"
-                >
-                  ?
-                </div>
-              );
-            }
-
-            return (
-              <div
-                key={`element-${idx}`}
-                className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white border-2 border-borderBase flex flex-col items-center justify-center p-2 shadow-xs"
-              >
-                <CulturalIcon
-                  type={element!.iconType}
-                  size={44}
-                  color={element!.color}
-                  className="w-10 h-10 sm:w-12 sm:h-12"
-                />
-              </div>
-            );
-          })}
+      <div className="flex flex-col lg:flex-row gap-6 items-start">
+        {/* Mobile Instructions Panel (above game on mobile / tablet) */}
+        <div className="w-full lg:hidden">
+          <GameInstructionsPanel gameType="pattern" isMobileOnly />
         </div>
-      </div>
 
-      {/* Answer Choices */}
-      <div>
-        <h3 className="text-center text-base sm:text-lg font-bold text-ink-800 mb-4">
-          Choose the correct item:
-        </h3>
+        {/* Main Board & Options Area */}
+        <div className="flex-1 w-full min-w-0">
+          {/* Pattern Sequence Strip */}
+          <div className="bg-cream-50 border-2 border-borderBase rounded-3xl p-4 sm:p-7 mb-6 sm:mb-8 shadow-subtle">
+            <span className="block text-center text-xs sm:text-sm font-bold text-ink-500 uppercase tracking-wider mb-4 sm:mb-6">
+              {t('sequencePattern')}
+            </span>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 max-w-2xl mx-auto">
-          {currentRound.options.map((option) => {
-            const isSelected = selectedOptionId === option.id;
-            const isCorrect = option.id === currentRound.correctAnswer.id;
+            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 md:gap-4">
+              {currentRound.sequence.map((element, idx) => {
+                const isMissingSlot = idx === currentRound.missingIndex;
 
-            return (
-              <button
-                key={option.id}
-                type="button"
-                onClick={() => handleOptionSelect(option.id)}
-                disabled={Boolean(selectedOptionId)}
-                className={`p-4 rounded-2xl border-2 flex flex-col items-center justify-center gap-2 transition-all touch-target-lg select-none ${
-                  isSelected && isCorrect
-                    ? 'bg-emerald-50 border-emerald-600 scale-102 ring-2 ring-emerald-500'
-                    : isSelected && !isCorrect
-                    ? 'bg-rose-50 border-rose-600 scale-98 ring-2 ring-rose-500'
-                    : 'bg-white hover:bg-cream-200 border-borderBase active:scale-98 shadow-card'
-                }`}
-                aria-label={option.label[language] || option.label.en}
-              >
-                <CulturalIcon
-                  type={option.iconType}
-                  size={52}
-                  color={option.color}
-                  className="w-12 h-12"
-                />
-                <span className="text-sm font-bold text-ink-900 line-clamp-1">
-                  {option.label[language] || option.label.en}
-                </span>
+                if (isMissingSlot) {
+                  return (
+                    <div
+                      key={`missing-${idx}`}
+                      className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-2xl border-3 border-dashed border-sage-500 bg-sage-50/70 flex items-center justify-center text-sage-800 font-extrabold text-xl sm:text-2xl md:text-3xl shadow-inner animate-pulse shrink-0"
+                    >
+                      ?
+                    </div>
+                  );
+                }
 
-                {isSelected && (
-                  <div className="mt-1">
-                    {isCorrect ? (
-                      <span className="inline-flex items-center gap-1 text-emerald-700 text-xs font-bold">
-                        <Check className="w-4 h-4" /> Correct
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center gap-1 text-rose-700 text-xs font-bold">
-                        <X className="w-4 h-4" /> Try again
-                      </span>
-                    )}
+                return (
+                  <div
+                    key={`element-${idx}`}
+                    className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-2xl bg-white border-2 border-borderBase flex flex-col items-center justify-center p-1.5 sm:p-2 shadow-xs shrink-0"
+                  >
+                    <CulturalIcon
+                      type={element!.iconType}
+                      size={40}
+                      color={element!.color}
+                      className="w-8 h-8 sm:w-11 sm:h-11 md:w-13 md:h-13"
+                    />
                   </div>
-                )}
-              </button>
-            );
-          })}
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Answer Choices */}
+          <div>
+            <h3 className="text-center text-base sm:text-lg font-bold text-ink-800 mb-4">
+              {t('chooseCorrectItem')}
+            </h3>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4 max-w-2xl mx-auto">
+              {currentRound.options.map((option) => {
+                const isSelected = selectedOptionId === option.id;
+                const isCorrect = option.id === currentRound.correctAnswer.id;
+
+                return (
+                  <button
+                    key={option.id}
+                    type="button"
+                    onClick={() => handleOptionSelect(option.id)}
+                    disabled={Boolean(selectedOptionId)}
+                    className={`p-3 sm:p-4 rounded-2xl border-2 flex flex-col items-center justify-center gap-2 transition-all touch-target touch-manipulation select-none ${
+                      isSelected && isCorrect
+                        ? 'bg-emerald-50 border-emerald-600 scale-102 ring-2 ring-emerald-500'
+                        : isSelected && !isCorrect
+                        ? 'bg-rose-50 border-rose-600 scale-98 ring-2 ring-rose-500'
+                        : 'bg-white hover:bg-cream-200 border-borderBase active:scale-98 shadow-card'
+                    }`}
+                    aria-label={option.label[language] || option.label.en}
+                  >
+                    <CulturalIcon
+                      type={option.iconType}
+                      size={48}
+                      color={option.color}
+                      className="w-10 h-10 sm:w-12 sm:h-12"
+                    />
+                    <span className="text-xs sm:text-sm font-bold text-ink-900 line-clamp-1">
+                      {option.label[language] || option.label.en}
+                    </span>
+
+                    {isSelected && (
+                      <div className="mt-1">
+                        {isCorrect ? (
+                          <span className="inline-flex items-center gap-1 text-emerald-700 text-xs font-bold">
+                            <Check className="w-4 h-4" /> {t('correct')}
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 text-rose-700 text-xs font-bold">
+                            <X className="w-4 h-4" /> {t('tryAgain')}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         </div>
+
+        {/* Desktop Sticky Side Instructions Panel (beside game on desktop) */}
+        <aside className="hidden lg:block w-80 xl:w-96 shrink-0 sticky top-24">
+          <GameInstructionsPanel gameType="pattern" isDesktopOnly />
+        </aside>
       </div>
 
       <GameResultModal

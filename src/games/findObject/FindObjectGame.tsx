@@ -5,6 +5,7 @@ import { DifficultyLevel } from '../../types';
 import { FindObjectRound, generateFindObjectSession } from './sceneEngine';
 import { GameHeader } from '../../components/games/GameHeader';
 import { GameResultModal } from '../../components/games/GameResultModal';
+import { GameInstructionsPanel } from '../../components/games/GameInstructionsPanel';
 import { CulturalIcon } from '../../components/ui/CulturalIcon';
 import { dataService } from '../../services/supabase/dataService';
 import { Check, X } from 'lucide-react';
@@ -116,7 +117,7 @@ export const FindObjectGame: React.FC<FindObjectGameProps> = ({ patientId, diffi
   const targetName = currentRound.targetObject.name[language] || currentRound.targetObject.name.en;
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6">
+    <div className="max-w-6xl mx-auto px-3 sm:px-4 py-4 sm:py-6 pb-32 w-full min-h-[calc(100vh-120px)]">
       <GameHeader
         title={t('findTheObject')}
         currentRound={currentRoundIdx + 1}
@@ -125,95 +126,109 @@ export const FindObjectGame: React.FC<FindObjectGameProps> = ({ patientId, diffi
         instructionText={currentRound.targetPrompt}
       />
 
-      {/* Target prompt card */}
-      <div className="bg-cream-50 border-2 border-borderBase rounded-2xl p-4 sm:p-5 mb-6 flex items-center justify-between shadow-subtle">
-        <div className="flex items-center gap-4">
-          <div className="p-2.5 bg-white border border-borderBase rounded-xl shadow-xs">
-            <CulturalIcon type={currentRound.targetObject.iconType} size={48} className="w-12 h-12" />
-          </div>
-          <div>
-            <span className="block text-sm font-semibold text-ink-500 uppercase tracking-wide">
-              {t('findPromptPrefix')}
-            </span>
-            <span className="text-xl sm:text-2xl font-bold text-ink-900">
-              {targetName}
-            </span>
-          </div>
+      <div className="flex flex-col lg:flex-row gap-6 items-start">
+        {/* Mobile Instructions Panel (above game on mobile / tablet) */}
+        <div className="w-full lg:hidden">
+          <GameInstructionsPanel gameType="find-object" isMobileOnly />
         </div>
 
-        <span className="text-sm font-semibold text-ink-500 bg-cream-200 px-3 py-1.5 rounded-lg">
-          {currentRound.scene.name[language] || currentRound.scene.name.en}
-        </span>
-      </div>
+        {/* Main Board & Canvas Area */}
+        <div className="flex-1 w-full min-w-0">
+          {/* Target prompt card */}
+          <div className="bg-cream-50 border-2 border-borderBase rounded-3xl p-4 sm:p-5 mb-5 flex items-center justify-between shadow-subtle">
+            <div className="flex items-center gap-3 sm:gap-4">
+              <div className="p-2 sm:p-2.5 bg-white border border-borderBase rounded-2xl shadow-xs shrink-0">
+                <CulturalIcon type={currentRound.targetObject.iconType} size={44} className="w-10 h-10 sm:w-12 sm:h-12" />
+              </div>
+              <div>
+                <span className="block text-xs sm:text-sm font-bold text-ink-500 uppercase tracking-wide">
+                  {t('findPromptPrefix')}
+                </span>
+                <span className="text-xl sm:text-2xl font-black text-ink-900 leading-tight">
+                  {targetName}
+                </span>
+              </div>
+            </div>
 
-      {/* Interactive Visual Scene Canvas */}
-      <div className="relative w-full aspect-[4/3] sm:aspect-[16/10] bg-cream-100 border-2 border-borderBase rounded-2xl overflow-hidden shadow-subtle select-none">
-        {/* Decorative subtle scene silhouettes based on scene type */}
-        <div className="absolute inset-0 pointer-events-none opacity-40">
-          {currentRound.scene.bgSvgType === 'teaGarden' ? (
-            <svg className="w-full h-full" viewBox="0 0 800 500" preserveAspectRatio="none">
-              <path d="M0 350 Q 200 300 400 340 T 800 320 V 500 H 0 Z" fill="#CBDCD0" />
-              <path d="M0 390 Q 250 360 500 380 T 800 360 V 500 H 0 Z" fill="#A7C4AF" />
-              <circle cx="680" cy="120" r="50" fill="#F9EDE3" />
-            </svg>
-          ) : currentRound.scene.bgSvgType === 'veranda' ? (
-            <svg className="w-full h-full" viewBox="0 0 800 500" preserveAspectRatio="none">
-              <line x1="80" y1="0" x2="80" y2="500" stroke="#D7C4B0" strokeWidth="8" />
-              <line x1="720" y1="0" x2="720" y2="500" stroke="#D7C4B0" strokeWidth="8" />
-              <line x1="0" y1="80" x2="800" y2="80" stroke="#D7C4B0" strokeWidth="12" />
-              <rect x="0" y="380" width="800" height="120" fill="#EAE0D0" />
-            </svg>
-          ) : (
-            <svg className="w-full h-full" viewBox="0 0 800 500" preserveAspectRatio="none">
-              <rect x="0" y="360" width="800" height="140" fill="#EFE8DC" />
-              <line x1="0" y1="360" x2="800" y2="360" stroke="#D2C7B8" strokeWidth="4" />
-            </svg>
-          )}
-        </div>
+            <span className="text-xs sm:text-sm font-bold text-ink-600 bg-cream-200 border border-borderBase px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-xl shrink-0">
+              {currentRound.scene.name[language] || currentRound.scene.name.en}
+            </span>
+          </div>
 
-        {/* Clickable Objects */}
-        {currentRound.allObjects.map((obj) => {
-          const isTarget = obj.id === currentRound.targetObject.id;
-          const isClicked = feedback?.clickedId === obj.id;
+          {/* Interactive Visual Scene Canvas */}
+          <div className="relative w-full aspect-[4/3] sm:aspect-[16/10] bg-cream-100 border-2 border-borderBase rounded-3xl overflow-hidden shadow-subtle select-none">
+            {/* Decorative subtle scene silhouettes based on scene type */}
+            <div className="absolute inset-0 pointer-events-none opacity-40">
+              {currentRound.scene.bgSvgType === 'teaGarden' ? (
+                <svg className="w-full h-full" viewBox="0 0 800 500" preserveAspectRatio="none">
+                  <path d="M0 350 Q 200 300 400 340 T 800 320 V 500 H 0 Z" fill="#CBDCD0" />
+                  <path d="M0 390 Q 250 360 500 380 T 800 360 V 500 H 0 Z" fill="#A7C4AF" />
+                  <circle cx="680" cy="120" r="50" fill="#F9EDE3" />
+                </svg>
+              ) : currentRound.scene.bgSvgType === 'veranda' ? (
+                <svg className="w-full h-full" viewBox="0 0 800 500" preserveAspectRatio="none">
+                  <line x1="80" y1="0" x2="80" y2="500" stroke="#D7C4B0" strokeWidth="8" />
+                  <line x1="720" y1="0" x2="720" y2="500" stroke="#D7C4B0" strokeWidth="8" />
+                  <line x1="0" y1="80" x2="800" y2="80" stroke="#D7C4B0" strokeWidth="12" />
+                  <rect x="0" y="380" width="800" height="120" fill="#EAE0D0" />
+                </svg>
+              ) : (
+                <svg className="w-full h-full" viewBox="0 0 800 500" preserveAspectRatio="none">
+                  <rect x="0" y="360" width="800" height="140" fill="#EFE8DC" />
+                  <line x1="0" y1="360" x2="800" y2="360" stroke="#D2C7B8" strokeWidth="4" />
+                </svg>
+              )}
+            </div>
 
-          return (
-            <button
-              key={`${obj.id}-${obj.xPercent}-${obj.yPercent}`}
-              type="button"
-              onClick={() => handleObjectClick(obj.id)}
-              disabled={Boolean(feedback?.isCorrect)}
-              style={{
-                left: `${obj.xPercent}%`,
-                top: `${obj.yPercent}%`,
-                transform: 'translate(-50%, -50%)',
-              }}
-              className={`absolute p-2 sm:p-3 rounded-2xl transition-all duration-150 touch-target focus-visible:outline-3 focus-visible:outline-sage-600 ${
-                isClicked && feedback.isCorrect
-                  ? 'ring-4 ring-emerald-500 bg-emerald-50 scale-110'
-                  : isClicked && !feedback.isCorrect
-                  ? 'ring-4 ring-rose-500 bg-rose-50 animate-shake'
-                  : 'hover:scale-105 active:scale-95 bg-white/70 hover:bg-white border border-borderBase shadow-xs'
-              }`}
-              aria-label={obj.name[language] || obj.name.en}
-            >
-              <CulturalIcon type={obj.iconType} size={obj.size} className="w-10 h-10 sm:w-14 sm:h-14" />
+            {/* Clickable Objects */}
+            {currentRound.allObjects.map((obj) => {
+              const isClicked = feedback?.clickedId === obj.id;
 
-              {isClicked && (
-                <span className="absolute -top-3 -right-3 w-7 h-7 rounded-full flex items-center justify-center text-white shadow-xs">
-                  {feedback.isCorrect ? (
-                    <span className="bg-emerald-600 w-full h-full rounded-full flex items-center justify-center">
-                      <Check className="w-4 h-4" />
-                    </span>
-                  ) : (
-                    <span className="bg-rose-600 w-full h-full rounded-full flex items-center justify-center">
-                      <X className="w-4 h-4" />
+              return (
+                <button
+                  key={`${obj.id}-${obj.xPercent}-${obj.yPercent}`}
+                  type="button"
+                  onClick={() => handleObjectClick(obj.id)}
+                  disabled={Boolean(feedback?.isCorrect)}
+                  style={{
+                    left: `${obj.xPercent}%`,
+                    top: `${obj.yPercent}%`,
+                    transform: 'translate(-50%, -50%)',
+                  }}
+                  className={`absolute p-1.5 sm:p-2.5 rounded-2xl transition-all duration-150 touch-target touch-manipulation focus-visible:outline-3 focus-visible:outline-sage-600 ${
+                    isClicked && feedback.isCorrect
+                      ? 'ring-4 ring-emerald-500 bg-emerald-50 scale-110 shadow-lg'
+                      : isClicked && !feedback.isCorrect
+                      ? 'ring-4 ring-rose-500 bg-rose-50 animate-shake shadow-lg'
+                      : 'hover:scale-105 active:scale-95 bg-white/80 hover:bg-white border border-borderBase shadow-xs'
+                  }`}
+                  aria-label={obj.name[language] || obj.name.en}
+                >
+                  <CulturalIcon type={obj.iconType} size={obj.size} className="w-9 h-9 sm:w-13 sm:h-13" />
+
+                  {isClicked && (
+                    <span className="absolute -top-2.5 -right-2.5 w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center text-white shadow-xs">
+                      {feedback.isCorrect ? (
+                        <span className="bg-emerald-600 w-full h-full rounded-full flex items-center justify-center">
+                          <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[3]" />
+                        </span>
+                      ) : (
+                        <span className="bg-rose-600 w-full h-full rounded-full flex items-center justify-center">
+                          <X className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[3]" />
+                        </span>
+                      )}
                     </span>
                   )}
-                </span>
-              )}
-            </button>
-          );
-        })}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Desktop Sticky Side Instructions Panel (beside game on desktop) */}
+        <aside className="hidden lg:block w-80 xl:w-96 shrink-0 sticky top-24">
+          <GameInstructionsPanel gameType="find-object" isDesktopOnly />
+        </aside>
       </div>
 
       <GameResultModal

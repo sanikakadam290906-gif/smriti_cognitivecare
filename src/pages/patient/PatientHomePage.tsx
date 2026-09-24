@@ -79,7 +79,7 @@ export const PatientHomePage: React.FC<PatientHomePageProps> = ({ patient }) => 
             onClick={() => navigate('/patient/medicines')}
             className="text-sm font-bold text-sage-700 hover:text-sage-800 underline"
           >
-            View all
+            {t('viewAll')}
           </button>
         </div>
 
@@ -113,10 +113,10 @@ export const PatientHomePage: React.FC<PatientHomePageProps> = ({ patient }) => 
                 }`}
               >
                 {pendingMed.status === 'taken'
-                  ? 'Taken'
+                  ? t('taken')
                   : pendingMed.status === 'remind_later'
-                  ? 'Remind later'
-                  : 'Pending'}
+                  ? t('remindMeLater')
+                  : t('pendingDose')}
               </span>
             </div>
 

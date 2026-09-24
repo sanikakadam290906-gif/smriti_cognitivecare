@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Language } from '../types';
 import { translations } from './translations';
+import { stopSpeech } from '../utils/speech';
 
 interface LanguageContextType {
   language: Language;
@@ -26,6 +27,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode; initialLang
 
   const setLanguage = (lang: Language) => {
     if (['en', 'as', 'lus'].includes(lang)) {
+      stopSpeech(); // Stop any audio when language changes
       setLanguageState(lang);
       localStorage.setItem('smriti_language', lang);
     }

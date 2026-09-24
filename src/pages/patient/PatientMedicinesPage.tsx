@@ -56,7 +56,7 @@ export const PatientMedicinesPage: React.FC<PatientMedicinesPageProps> = ({ pati
             {patient.name} • {t('todaysMedication')}
           </p>
         </div>
-        <VoiceButton textToSpeak="Here are your scheduled medicines for today. Tap Taken once you have taken your medicine." />
+        <VoiceButton textToSpeak={t('patientVoicePromptMeds')} />
       </div>
 
       {loading ? (
@@ -101,7 +101,7 @@ export const PatientMedicinesPage: React.FC<PatientMedicinesPageProps> = ({ pati
                         : 'bg-cream-200 text-ink-800 border-borderBase'
                     }`}
                   >
-                    {isTaken ? '✓ Taken' : med.status === 'remind_later' ? 'Remind later' : 'Pending'}
+                    {isTaken ? '✓ ' + t('taken') : med.status === 'remind_later' ? t('remindMeLater') : t('pendingDose')}
                   </span>
                 </div>
 

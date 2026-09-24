@@ -53,10 +53,10 @@ export const CaregiverDashboard: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-borderBase pb-6">
         <div>
           <span className="text-sm font-bold text-sage-700 uppercase tracking-wider">
-            Caregiver Overview
+            {t('caregiverOverview')}
           </span>
           <h1 className="text-3xl sm:text-4xl font-black text-ink-900 tracking-tight">
-            Good morning
+            {t('goodMorning')}
           </h1>
         </div>
 
@@ -66,7 +66,7 @@ export const CaregiverDashboard: React.FC = () => {
           className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-borderBase bg-white text-ink-900 font-bold hover:bg-cream-100 transition-colors shadow-xs"
         >
           <User className="w-4 h-4 text-ink-600" />
-          <span>Manage Patients</span>
+          <span>{t('managePatients')}</span>
         </button>
       </div>
 
@@ -77,7 +77,7 @@ export const CaregiverDashboard: React.FC = () => {
             {t('navPatients')}
           </h2>
           <span className="text-sm font-semibold text-ink-500">
-            {patients.length} active patients
+            {patients.length} {t('activePatients')}
           </span>
         </div>
 
@@ -121,16 +121,16 @@ export const CaregiverDashboard: React.FC = () => {
                       {/* Medication Status */}
                       <div>
                         <span className="block text-xs font-bold text-ink-400 uppercase tracking-wider mb-1">
-                          Medication
+                          {t('navMedicines')}
                         </span>
                         <div className="flex items-center gap-2">
                           {allMedsTaken ? (
                             <span className="inline-flex items-center gap-1.5 text-sm font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-lg">
-                              <CheckCircle2 className="w-4 h-4 text-emerald-600" /> All doses taken ({takenCount}/{totalMeds})
+                              <CheckCircle2 className="w-4 h-4 text-emerald-600" /> {t('allDosesTaken')} ({takenCount}/{totalMeds})
                             </span>
                           ) : (
                             <span className="inline-flex items-center gap-1.5 text-sm font-bold text-amber-900 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-lg">
-                              <AlertCircle className="w-4 h-4 text-amber-600" /> {takenCount} of {totalMeds} taken
+                              <AlertCircle className="w-4 h-4 text-amber-600" /> {takenCount}/{totalMeds} {t('dosesTakenOf')}
                             </span>
                           )}
                         </div>
@@ -140,18 +140,18 @@ export const CaregiverDashboard: React.FC = () => {
                       <div className="grid grid-cols-2 gap-2 pt-1">
                         <div>
                           <span className="block text-xs font-bold text-ink-400 uppercase tracking-wider mb-1">
-                            Last activity
+                            {t('lastActivity')}
                           </span>
                           <span className="text-sm font-bold text-ink-800 block">
                             {latestSession
                               ? new Date(latestSession.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                              : 'No activity yet'}
+                              : '—'}
                           </span>
                         </div>
 
                         <div>
                           <span className="block text-xs font-bold text-ink-400 uppercase tracking-wider mb-1">
-                            Accuracy
+                            {t('accuracy')}
                           </span>
                           <span className="text-sm font-extrabold text-sage-700 block">
                             {latestSession ? `${latestSession.accuracy}%` : '—'}
@@ -162,7 +162,7 @@ export const CaregiverDashboard: React.FC = () => {
                       {/* Current Difficulty */}
                       <div className="pt-1">
                         <span className="block text-xs font-bold text-ink-400 uppercase tracking-wider mb-1">
-                          Difficulty
+                          {t('difficulty')}
                         </span>
                         <span className="px-2.5 py-0.5 bg-sage-50 text-sage-800 border border-sage-200 rounded-md text-xs font-bold">
                           {patient.currentDifficulty}
@@ -173,7 +173,7 @@ export const CaregiverDashboard: React.FC = () => {
 
                   {/* Card Action Link */}
                   <div className="mt-6 pt-4 border-t border-borderBase/60 flex items-center justify-between text-sm font-bold text-sage-700 group-hover:text-sage-800">
-                    <span>Open Patient Care</span>
+                    <span>{t('openPatientCare')}</span>
                     <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                   </div>
                 </div>

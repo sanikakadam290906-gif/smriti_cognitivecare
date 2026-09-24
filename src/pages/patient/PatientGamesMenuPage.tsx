@@ -56,10 +56,10 @@ export const PatientGamesMenuPage: React.FC<PatientGamesMenuPageProps> = ({ diff
             {t('todaysActivities')}
           </h1>
           <span className="text-sm font-semibold text-ink-500">
-            Level: {difficulty}
+            {t('level')}: {difficulty}
           </span>
         </div>
-        <VoiceButton textToSpeak="Choose an activity to play. Tap any card to begin." />
+        <VoiceButton textToSpeak={t('patientVoicePromptGames')} />
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
