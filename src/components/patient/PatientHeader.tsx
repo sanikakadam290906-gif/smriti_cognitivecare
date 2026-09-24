@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Patient, Language } from '../../types';
 import { useTranslation } from '../../i18n/LanguageContext';
 import { ArrowLeftRight, LogOut, Globe, Check } from 'lucide-react';
+import { PatientSOSButton } from './PatientSOSButton';
 
 interface PatientHeaderProps {
   patient: Patient;
@@ -29,28 +30,31 @@ export const PatientHeader: React.FC<PatientHeaderProps> = ({
   const currentLangObj = languages.find((l) => l.code === language) || languages[0];
 
   return (
-    <header className="bg-cream-50 border-b-2 border-borderBase px-4 py-3 sticky top-0 z-30 shadow-subtle">
-      <div className="max-w-4xl mx-auto flex items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-sage-200 border border-sage-500 text-sage-800 flex items-center justify-center font-bold text-lg shrink-0">
+    <header className="bg-cream-50 border-b-2 border-borderBase px-3 sm:px-4 py-2.5 sm:py-3 sticky top-0 z-30 shadow-subtle">
+      <div className="max-w-4xl mx-auto flex items-center justify-between gap-2 sm:gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-sage-200 border border-sage-500 text-sage-800 flex items-center justify-center font-bold text-base sm:text-lg shrink-0">
             {patient.name.charAt(0)}
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="font-extrabold text-lg sm:text-xl text-ink-900 leading-tight">
+          <div className="min-w-0">
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <span className="font-extrabold text-base sm:text-xl text-ink-900 leading-tight truncate max-w-[100px] xs:max-w-[140px] sm:max-w-none">
                 {patient.name}
               </span>
-              <span className="text-xs bg-cream-200 border border-borderBase px-2 py-0.5 rounded-md text-ink-700 font-semibold">
+              <span className="text-[10px] sm:text-xs bg-cream-200 border border-borderBase px-1.5 sm:px-2 py-0.5 rounded-md text-ink-700 font-semibold shrink-0">
                 {patient.region}
               </span>
             </div>
-            <span className="text-xs text-ink-500 font-semibold block">
+            <span className="text-[10px] sm:text-xs text-ink-500 font-semibold block">
               {patient.age} years
             </span>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          {/* Prominent Emergency SOS Button */}
+          <PatientSOSButton patient={patient} />
+
           {/* Interface Language Switcher */}
           <div className="relative">
             <button

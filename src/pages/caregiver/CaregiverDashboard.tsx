@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Patient, Medication, GameSession } from '../../types';
+import { Patient, Medication, GameSession, SOSAlert } from '../../types';
 import { dataService } from '../../services/supabase/dataService';
 import { useTranslation } from '../../i18n/LanguageContext';
 import { MedicalDisclaimer } from '../../components/ui/MedicalDisclaimer';
-import { Clock, CheckCircle2, AlertCircle, ChevronRight, User, Sparkles } from 'lucide-react';
+import { CaregiverSOSSection } from '../../components/caregiver/CaregiverSOSSection';
+import { CheckCircle2, AlertCircle, ChevronRight, User } from 'lucide-react';
 
 export const CaregiverDashboard: React.FC = () => {
   const { t } = useTranslation();
@@ -13,20 +14,21 @@ export const CaregiverDashboard: React.FC = () => {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [medications, setMedications] = useState<Record<string, Medication[]>>({});
   const [sessions, setSessions] = useState<Record<string, GameSession[]>>({});
+  const [sosAlerts, setSosAlerts] = useState<SOSAlert[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [alertsLoading, setAlertsLoading] = useState<boolean>(false);
 
-  useEffect(() => {
-    loadAllData();
-
-    // Subscribe to live changes
-    const unsubscribe = dataService.subscribe(() => {
-      loadAllData();
-    });
-
-    return () => unsubscribe();
+  const loadSosAlerts = useCallback(async () => {
+    setAlertsLoading(true);
+    try {
+      const alerts = await dataService.getSosAlerts();
+      setSosAlerts(alerts);
+    } finally {
+      setAlertsLoading(false);
+    }
   }, []);
 
-  const loadAllData = async () => {
+  const loadAllData = useCallback(async () => {
     const pts = await dataService.getPatients();
     setPatients(pts);
 
@@ -45,6 +47,55 @@ export const CaregiverDashboard: React.FC = () => {
     setMedications(medsMap);
     setSessions(sessMap);
     setLoading(false);
+  }, []);
+
+  useEffect(() => {
+    loadAllData();
+    loadSosAlerts();
+
+    // 1. Subscribe to Supabase Realtime changes
+    const unsubscribeRealtime = dataService.subscribeToRealtimeSosAlerts(() => {
+      loadSosAlerts();
+    });
+
+    // 2. Subscribe to live cross-tab/local broadcast channel changes
+    const unsubscribeBroadcast = dataService.subscribe((event) => {
+      if (event.type === 'sos_alerts') {
+        loadSosAlerts();
+      } else {
+        loadAllData();
+      }
+    });
+
+    // Safe periodic fallback: refresh alerts every 15 seconds
+    const interval = setInterval(() => {
+      loadSosAlerts();
+    }, 15000);
+
+    return () => {
+      unsubscribeRealtime();
+      unsubscribeBroadcast();
+      clearInterval(interval);
+    };
+  }, [loadAllData, loadSosAlerts]);
+
+  const handleAcknowledgeAlert = async (id: string) => {
+    await dataService.acknowledgeSosAlert(id);
+    await loadSosAlerts();
+  };
+
+  const handleResolveAlert = async (id: string) => {
+    await dataService.resolveSosAlert(id);
+    await loadSosAlerts();
+  };
+
+  const handleSimulateDemoAlert = async () => {
+    const targetPatient = patients[0] || { id: 'patient-asha-devi', name: 'Asha Devi' };
+    await dataService.createSosAlert({
+      patientId: targetPatient.id,
+      message: `[DEMO TEST ALERT] Caregiver simulated test emergency for ${targetPatient.name}`,
+    });
+    await loadSosAlerts();
   };
 
   return (
@@ -69,6 +120,16 @@ export const CaregiverDashboard: React.FC = () => {
           <span>{t('managePatients')}</span>
         </button>
       </div>
+
+      {/* SOS Alerts Section (Immediately noticeable at top of dashboard) */}
+      <CaregiverSOSSection
+        alerts={sosAlerts}
+        loading={alertsLoading}
+        onRefresh={loadSosAlerts}
+        onAcknowledge={handleAcknowledgeAlert}
+        onResolve={handleResolveAlert}
+        onSimulateDemoAlert={handleSimulateDemoAlert}
+      />
 
       {/* Patients Section */}
       <div>

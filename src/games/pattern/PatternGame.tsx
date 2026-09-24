@@ -114,7 +114,7 @@ export const PatternGame: React.FC<PatternGameProps> = ({ patientId, difficulty 
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-3 sm:px-4 py-4 sm:py-6 pb-32 w-full min-h-[calc(100vh-120px)]">
+    <div className="w-full max-w-6xl mx-auto px-3 sm:px-4 py-4 sm:py-6 pb-36 sm:pb-40">
       <GameHeader
         title={t('completeThePattern')}
         currentRound={currentRoundIdx + 1}
@@ -124,13 +124,8 @@ export const PatternGame: React.FC<PatternGameProps> = ({ patientId, difficulty 
       />
 
       <div className="flex flex-col lg:flex-row gap-6 items-start">
-        {/* Mobile Instructions Panel (above game on mobile / tablet) */}
-        <div className="w-full lg:hidden">
-          <GameInstructionsPanel gameType="pattern" isMobileOnly />
-        </div>
-
-        {/* Main Board & Options Area */}
-        <div className="flex-1 w-full min-w-0">
+        {/* Main Board & Options Area (Left on desktop, below instructions on mobile) */}
+        <div className="flex-1 w-full min-w-0 order-2 lg:order-1">
           {/* Pattern Sequence Strip */}
           <div className="bg-cream-50 border-2 border-borderBase rounded-3xl p-4 sm:p-7 mb-6 sm:mb-8 shadow-subtle">
             <span className="block text-center text-xs sm:text-sm font-bold text-ink-500 uppercase tracking-wider mb-4 sm:mb-6">
@@ -225,9 +220,9 @@ export const PatternGame: React.FC<PatternGameProps> = ({ patientId, difficulty 
           </div>
         </div>
 
-        {/* Desktop Sticky Side Instructions Panel (beside game on desktop) */}
-        <aside className="hidden lg:block w-80 xl:w-96 shrink-0 sticky top-24">
-          <GameInstructionsPanel gameType="pattern" isDesktopOnly />
+        {/* Instructions Panel Area (Right on desktop, above board on mobile) */}
+        <aside className="w-full lg:w-80 xl:w-96 shrink-0 order-1 lg:order-2">
+          <GameInstructionsPanel gameType="pattern" />
         </aside>
       </div>
 

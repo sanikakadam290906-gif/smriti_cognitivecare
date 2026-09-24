@@ -117,7 +117,7 @@ export const FindObjectGame: React.FC<FindObjectGameProps> = ({ patientId, diffi
   const targetName = currentRound.targetObject.name[language] || currentRound.targetObject.name.en;
 
   return (
-    <div className="max-w-6xl mx-auto px-3 sm:px-4 py-4 sm:py-6 pb-32 w-full min-h-[calc(100vh-120px)]">
+    <div className="w-full max-w-6xl mx-auto px-3 sm:px-4 py-4 sm:py-6 pb-36 sm:pb-40">
       <GameHeader
         title={t('findTheObject')}
         currentRound={currentRoundIdx + 1}
@@ -127,13 +127,8 @@ export const FindObjectGame: React.FC<FindObjectGameProps> = ({ patientId, diffi
       />
 
       <div className="flex flex-col lg:flex-row gap-6 items-start">
-        {/* Mobile Instructions Panel (above game on mobile / tablet) */}
-        <div className="w-full lg:hidden">
-          <GameInstructionsPanel gameType="find-object" isMobileOnly />
-        </div>
-
-        {/* Main Board & Canvas Area */}
-        <div className="flex-1 w-full min-w-0">
+        {/* Main Board & Canvas Area (Left on desktop, below instructions on mobile) */}
+        <div className="flex-1 w-full min-w-0 order-2 lg:order-1">
           {/* Target prompt card */}
           <div className="bg-cream-50 border-2 border-borderBase rounded-3xl p-4 sm:p-5 mb-5 flex items-center justify-between shadow-subtle">
             <div className="flex items-center gap-3 sm:gap-4">
@@ -225,9 +220,9 @@ export const FindObjectGame: React.FC<FindObjectGameProps> = ({ patientId, diffi
           </div>
         </div>
 
-        {/* Desktop Sticky Side Instructions Panel (beside game on desktop) */}
-        <aside className="hidden lg:block w-80 xl:w-96 shrink-0 sticky top-24">
-          <GameInstructionsPanel gameType="find-object" isDesktopOnly />
+        {/* Instructions Panel Area (Right on desktop, above board on mobile) */}
+        <aside className="w-full lg:w-80 xl:w-96 shrink-0 order-1 lg:order-2">
+          <GameInstructionsPanel gameType="find-object" />
         </aside>
       </div>
 

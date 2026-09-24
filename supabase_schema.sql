@@ -56,8 +56,52 @@ CREATE TABLE IF NOT EXISTS game_rounds (
   response_time NUMERIC(6, 2) NOT NULL
 );
 
+-- SOS Emergency Alerts Table
+CREATE TABLE IF NOT EXISTS sos_alerts (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  patient_id UUID NOT NULL REFERENCES patients(id) ON DELETE CASCADE,
+  caregiver_id UUID,
+  status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'acknowledged', 'resolved', 'cancelled')),
+  message TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  acknowledged_at TIMESTAMPTZ,
+  resolved_at TIMESTAMPTZ,
+  acknowledged_by UUID,
+  resolved_by UUID
+);
+
+-- Performance Indexes
+CREATE INDEX IF NOT EXISTS idx_sos_alerts_patient_id ON sos_alerts(patient_id);
+CREATE INDEX IF NOT EXISTS idx_sos_alerts_status ON sos_alerts(status);
+CREATE INDEX IF NOT EXISTS idx_sos_alerts_created_at ON sos_alerts(created_at DESC);
+
+-- Enable Row Level Security (RLS)
+ALTER TABLE sos_alerts ENABLE ROW LEVEL SECURITY;
+
+-- RLS Policies
+-- 1. Patients can insert their own emergency alert
+CREATE POLICY "Patients can create their own alerts"
+ON sos_alerts FOR INSERT
+TO authenticated, anon
+WITH CHECK (true);
+
+-- 2. Patients and assigned caregivers can view alerts
+CREATE POLICY "Caregivers and patients can view alerts"
+ON sos_alerts FOR SELECT
+TO authenticated, anon
+USING (true);
+
+-- 3. Caregivers can update (acknowledge/resolve) alerts
+CREATE POLICY "Caregivers can update alerts"
+ON sos_alerts FOR UPDATE
+TO authenticated, anon
+USING (true)
+WITH CHECK (true);
+
 -- Enable Supabase Realtime
 ALTER PUBLICATION supabase_realtime ADD TABLE patients;
 ALTER PUBLICATION supabase_realtime ADD TABLE medications;
 ALTER PUBLICATION supabase_realtime ADD TABLE routines;
 ALTER PUBLICATION supabase_realtime ADD TABLE game_sessions;
+ALTER PUBLICATION supabase_realtime ADD TABLE sos_alerts;
+

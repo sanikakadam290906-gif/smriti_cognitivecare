@@ -7,6 +7,8 @@ import { Button } from '../../components/ui/Button';
 import { dataService } from '../../services/supabase/dataService';
 import { Check, Clock, Brain, Search, Puzzle, CalendarCheck } from 'lucide-react';
 
+import { PatientSOSButton } from '../../components/patient/PatientSOSButton';
+
 interface PatientHomePageProps {
   patient: Patient;
 }
@@ -54,7 +56,7 @@ export const PatientHomePage: React.FC<PatientHomePageProps> = ({ patient }) => 
   const greetingText = `${t('goodMorning')}, ${patient.name.split(' ')[0]}. ${t('letsHaveAGoodDay')}`;
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-6 pb-28 space-y-8">
+    <div className="max-w-2xl mx-auto px-4 py-6 pb-28 space-y-6 sm:space-y-8">
       {/* Warm Greeting Section */}
       <div className="bg-cream-50 border-2 border-borderBase rounded-3xl p-6 sm:p-7 shadow-subtle flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -67,6 +69,9 @@ export const PatientHomePage: React.FC<PatientHomePageProps> = ({ patient }) => 
         </div>
         <VoiceButton textToSpeak={greetingText} />
       </div>
+
+      {/* Emergency SOS Banner Card */}
+      <PatientSOSButton patient={patient} variant="banner" />
 
       {/* Today's Medication Section */}
       <div>

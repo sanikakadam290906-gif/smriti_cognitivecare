@@ -58,3 +58,21 @@ export interface GameRoundResult {
   responseTime: number;
   prompt?: string;
 }
+
+export type SOSAlertStatus = 'active' | 'acknowledged' | 'resolved' | 'cancelled';
+
+export interface SOSAlert {
+  id: string;
+  patientId: string;
+  caregiverId?: string | null;
+  status: SOSAlertStatus;
+  message?: string;
+  createdAt: string;
+  acknowledgedAt?: string | null;
+  resolvedAt?: string | null;
+  acknowledgedBy?: string | null;
+  resolvedBy?: string | null;
+  patientName?: string;
+  patientRegion?: string;
+}
+

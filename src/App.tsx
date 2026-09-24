@@ -93,6 +93,10 @@ export const AppContent: React.FC = () => {
   const handleSelectPatient = (id: string) => {
     setActivePatientId(id);
     localStorage.setItem('smriti_active_patient_id', id);
+    const selected = patients.find((p) => p.id === id);
+    if (selected?.language) {
+      setLanguage(selected.language);
+    }
   };
 
   const activePatient =

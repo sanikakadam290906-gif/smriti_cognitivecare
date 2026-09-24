@@ -134,7 +134,7 @@ export const MemoryMatchGame: React.FC<MemoryMatchGameProps> = ({ patientId, dif
       : 'grid-cols-4 max-w-3xl';
 
   return (
-    <div className="max-w-6xl mx-auto px-3 sm:px-4 py-4 sm:py-6 pb-32 w-full min-h-[calc(100vh-120px)]">
+    <div className="w-full max-w-6xl mx-auto px-3 sm:px-4 py-4 sm:py-6 pb-36 sm:pb-40">
       <GameHeader
         title={t('memoryMatch')}
         difficulty={difficulty}
@@ -142,13 +142,8 @@ export const MemoryMatchGame: React.FC<MemoryMatchGameProps> = ({ patientId, dif
       />
 
       <div className="flex flex-col lg:flex-row gap-6 items-start">
-        {/* Mobile Instruction Panel (above game on mobile / tablet) */}
-        <div className="w-full lg:hidden">
-          <GameInstructionsPanel gameType="memory" isMobileOnly />
-        </div>
-
-        {/* Main Board Area */}
-        <div className="flex-1 w-full min-w-0">
+        {/* Main Board Area (Left on desktop, below instructions on mobile) */}
+        <div className="flex-1 w-full min-w-0 order-2 lg:order-1">
           <div className={`grid ${gridColsClass} gap-2.5 sm:gap-4 mx-auto`}>
             {cards.map((card, idx) => (
               <button
@@ -186,9 +181,9 @@ export const MemoryMatchGame: React.FC<MemoryMatchGameProps> = ({ patientId, dif
           </div>
         </div>
 
-        {/* Desktop Sticky Side Instructions Panel (beside game on desktop) */}
-        <aside className="hidden lg:block w-80 xl:w-96 shrink-0 sticky top-24">
-          <GameInstructionsPanel gameType="memory" isDesktopOnly />
+        {/* Instructions Panel Area (Right on desktop, above board on mobile) */}
+        <aside className="w-full lg:w-80 xl:w-96 shrink-0 order-1 lg:order-2">
+          <GameInstructionsPanel gameType="memory" />
         </aside>
       </div>
 

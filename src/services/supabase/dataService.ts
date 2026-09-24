@@ -1,4 +1,4 @@
-import { Patient, Medication, RoutineItem, GameSession } from '../../types';
+import { Patient, Medication, RoutineItem, GameSession, SOSAlert } from '../../types';
 import { INITIAL_PATIENTS, INITIAL_MEDICATIONS, INITIAL_ROUTINES, INITIAL_GAME_SESSIONS } from '../../data/demoPatients';
 import { supabase } from './client';
 
@@ -7,10 +7,11 @@ const STORAGE_KEYS = {
   MEDICATIONS: 'smriti_medications_v1',
   ROUTINES: 'smriti_routines_v1',
   GAME_SESSIONS: 'smriti_game_sessions_v1',
+  SOS_ALERTS: 'smriti_sos_alerts_v1',
   INITIALIZED: 'smriti_initialized_v1',
 };
 
-type SyncEventType = 'patients' | 'medications' | 'routines' | 'game_sessions' | 'all';
+type SyncEventType = 'patients' | 'medications' | 'routines' | 'game_sessions' | 'sos_alerts' | 'all';
 type Listener = (event: { type: SyncEventType; payload?: any }) => void;
 
 class DataService {
@@ -44,7 +45,10 @@ class DataService {
       localStorage.setItem(STORAGE_KEYS.MEDICATIONS, JSON.stringify(INITIAL_MEDICATIONS));
       localStorage.setItem(STORAGE_KEYS.ROUTINES, JSON.stringify(INITIAL_ROUTINES));
       localStorage.setItem(STORAGE_KEYS.GAME_SESSIONS, JSON.stringify(INITIAL_GAME_SESSIONS));
+      localStorage.setItem(STORAGE_KEYS.SOS_ALERTS, JSON.stringify([]));
       localStorage.setItem(STORAGE_KEYS.INITIALIZED, 'true');
+    } else if (!localStorage.getItem(STORAGE_KEYS.SOS_ALERTS)) {
+      localStorage.setItem(STORAGE_KEYS.SOS_ALERTS, JSON.stringify([]));
     }
   }
 
@@ -363,12 +367,221 @@ class DataService {
     return newSession;
   }
 
+  // --- SOS Alerts ---
+  public async getSosAlerts(patientId?: string): Promise<SOSAlert[]> {
+    const patients = await this.getPatients();
+    const patientMap = new Map(patients.map((p) => [p.id, p]));
+
+    if (supabase) {
+      try {
+        let query = supabase.from('sos_alerts').select('*').order('created_at', { ascending: false });
+        if (patientId) {
+          query = query.eq('patient_id', patientId);
+        }
+        const { data, error } = await query;
+        if (!error && data) {
+          return data.map((row: any): SOSAlert => {
+            const pt = patientMap.get(row.patient_id);
+            return {
+              id: row.id,
+              patientId: row.patient_id,
+              caregiverId: row.caregiver_id,
+              status: row.status,
+              message: row.message,
+              createdAt: row.created_at,
+              acknowledgedAt: row.acknowledged_at,
+              resolvedAt: row.resolved_at,
+              acknowledgedBy: row.acknowledged_by,
+              resolvedBy: row.resolved_by,
+              patientName: pt?.name || 'Patient',
+              patientRegion: pt?.region || '',
+            };
+          });
+        }
+      } catch (err) {
+        console.warn('Could not query sos_alerts from Supabase, using local store:', err);
+      }
+    }
+
+    const raw = localStorage.getItem(STORAGE_KEYS.SOS_ALERTS);
+    const all: SOSAlert[] = raw ? JSON.parse(raw) : [];
+    const enriched = all.map((alert) => {
+      const pt = patientMap.get(alert.patientId);
+      return {
+        ...alert,
+        patientName: alert.patientName || pt?.name || 'Patient',
+        patientRegion: alert.patientRegion || pt?.region || '',
+      };
+    });
+
+    if (patientId) {
+      return enriched
+        .filter((a) => a.patientId === patientId)
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    }
+    return enriched.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  }
+
+  public async createSosAlert(params: {
+    patientId: string;
+    caregiverId?: string | null;
+    message?: string;
+  }): Promise<SOSAlert> {
+    const patients = await this.getPatients();
+    const pt = patients.find((p) => p.id === params.patientId);
+
+    const newId =
+      typeof crypto !== 'undefined' && crypto.randomUUID
+        ? crypto.randomUUID()
+        : `sos-${Date.now()}`;
+    const now = new Date().toISOString();
+
+    const newAlert: SOSAlert = {
+      id: newId,
+      patientId: params.patientId,
+      caregiverId: params.caregiverId || null,
+      status: 'active',
+      message: params.message || 'Emergency assistance requested',
+      createdAt: now,
+      patientName: pt?.name || 'Patient',
+      patientRegion: pt?.region || '',
+    };
+
+    if (supabase) {
+      const dbRecord = {
+        id: newAlert.id,
+        patient_id: newAlert.patientId,
+        caregiver_id: newAlert.caregiverId,
+        status: newAlert.status,
+        message: newAlert.message,
+        created_at: newAlert.createdAt,
+      };
+
+      const { error } = await supabase.from('sos_alerts').insert([dbRecord]);
+      if (error) {
+        console.error('Failed to save SOS alert to Supabase:', error);
+        throw error;
+      }
+    }
+
+    // Save locally for resilient caching, demo support, and multi-tab broadcasting
+    const raw = localStorage.getItem(STORAGE_KEYS.SOS_ALERTS);
+    const all: SOSAlert[] = raw ? JSON.parse(raw) : [];
+    all.unshift(newAlert);
+    localStorage.setItem(STORAGE_KEYS.SOS_ALERTS, JSON.stringify(all));
+
+    this.broadcast({ type: 'sos_alerts', payload: newAlert });
+    return newAlert;
+  }
+
+  public async acknowledgeSosAlert(id: string, caregiverId?: string): Promise<SOSAlert> {
+    const now = new Date().toISOString();
+
+    if (supabase) {
+      const updateData: any = {
+        status: 'acknowledged',
+        acknowledged_at: now,
+      };
+      if (caregiverId) {
+        updateData.acknowledged_by = caregiverId;
+      }
+      const { error } = await supabase.from('sos_alerts').update(updateData).eq('id', id);
+      if (error) {
+        console.error('Failed to acknowledge SOS alert in Supabase:', error);
+        throw error;
+      }
+    }
+
+    const raw = localStorage.getItem(STORAGE_KEYS.SOS_ALERTS);
+    const all: SOSAlert[] = raw ? JSON.parse(raw) : [];
+    const index = all.findIndex((a) => a.id === id);
+    if (index === -1) {
+      throw new Error('SOS alert not found');
+    }
+
+    const updated: SOSAlert = {
+      ...all[index],
+      status: 'acknowledged',
+      acknowledgedAt: now,
+      acknowledgedBy: caregiverId || all[index].acknowledgedBy || null,
+    };
+
+    all[index] = updated;
+    localStorage.setItem(STORAGE_KEYS.SOS_ALERTS, JSON.stringify(all));
+
+    this.broadcast({ type: 'sos_alerts', payload: updated });
+    return updated;
+  }
+
+  public async resolveSosAlert(id: string, caregiverId?: string): Promise<SOSAlert> {
+    const now = new Date().toISOString();
+
+    if (supabase) {
+      const updateData: any = {
+        status: 'resolved',
+        resolved_at: now,
+      };
+      if (caregiverId) {
+        updateData.resolved_by = caregiverId;
+      }
+      const { error } = await supabase.from('sos_alerts').update(updateData).eq('id', id);
+      if (error) {
+        console.error('Failed to resolve SOS alert in Supabase:', error);
+        throw error;
+      }
+    }
+
+    const raw = localStorage.getItem(STORAGE_KEYS.SOS_ALERTS);
+    const all: SOSAlert[] = raw ? JSON.parse(raw) : [];
+    const index = all.findIndex((a) => a.id === id);
+    if (index === -1) {
+      throw new Error('SOS alert not found');
+    }
+
+    const updated: SOSAlert = {
+      ...all[index],
+      status: 'resolved',
+      resolvedAt: now,
+      resolvedBy: caregiverId || all[index].resolvedBy || null,
+    };
+
+    all[index] = updated;
+    localStorage.setItem(STORAGE_KEYS.SOS_ALERTS, JSON.stringify(all));
+
+    this.broadcast({ type: 'sos_alerts', payload: updated });
+    return updated;
+  }
+
+  public subscribeToRealtimeSosAlerts(onUpdate: (payload: any) => void): () => void {
+    if (!supabase) {
+      return () => {};
+    }
+
+    const client = supabase;
+    const channel = client
+      .channel('realtime_sos_alerts')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'sos_alerts' },
+        (payload) => {
+          this.broadcast({ type: 'sos_alerts', payload });
+          onUpdate(payload);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      client.removeChannel(channel);
+    };
+  }
+
   // --- Reset Demo Data ---
   public async resetDemoData(): Promise<void> {
     localStorage.setItem(STORAGE_KEYS.PATIENTS, JSON.stringify(INITIAL_PATIENTS));
     localStorage.setItem(STORAGE_KEYS.MEDICATIONS, JSON.stringify(INITIAL_MEDICATIONS));
     localStorage.setItem(STORAGE_KEYS.ROUTINES, JSON.stringify(INITIAL_ROUTINES));
     localStorage.setItem(STORAGE_KEYS.GAME_SESSIONS, JSON.stringify(INITIAL_GAME_SESSIONS));
+    localStorage.setItem(STORAGE_KEYS.SOS_ALERTS, JSON.stringify([]));
     localStorage.setItem(STORAGE_KEYS.INITIALIZED, 'true');
 
     this.broadcast({ type: 'all' });
@@ -376,3 +589,4 @@ class DataService {
 }
 
 export const dataService = new DataService();
+

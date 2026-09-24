@@ -20,6 +20,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({ patients, onSelectPati
   };
 
   const handleSelectAndProceed = (patientId: string) => {
+    const selectedPatient = patients.find((p) => p.id === patientId);
+    if (selectedPatient?.language) {
+      setLanguage(selectedPatient.language);
+    }
     onSelectPatient(patientId);
     setShowPatientSelectModal(false);
     navigate('/patient/home');
@@ -158,10 +162,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({ patients, onSelectPati
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink-900/40 backdrop-blur-xs">
           <div className="bg-white border-2 border-borderBase rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-lg animate-in fade-in">
             <h2 className="text-2xl font-black text-ink-900 mb-1">
-              {t('selectLanguage') || 'Select Patient'}
+              {t('selectPatient')}
             </h2>
             <p className="text-sm font-semibold text-ink-500 mb-6">
-              Choose which demo profile to enter:
+              {t('choosePatientProfile')}
             </p>
 
             <div className="space-y-3">
